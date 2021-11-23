@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ColorPicker</title>
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            align-items: center;
+            justify-content: center;
+        }
+        .picker {
+            width: 600px;
+            height: 60px;
+            box-shadow: 0 0 5px 0 #0002, 0 0 15px 0 #0002;
+            border-radius: 10px;
+            background-image: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="picker"></div>
+    <script>
+        const hsvToRgb = (h,s,v) => {
+            let h1 = h / 60,
+                c = v * s,
+                x = c * (1 - Math.abs((h1 % 2) - 1));
+            if (h1 === 0) {
+                return {r: 0, g: 0, b: 0};
+            } else if (h1 < 1) {
+                return {r: c * 255, g: x * 255, b: 0};
+            } else if (h1 < 2) {
+                return {r: x * 255, g: c * 255, b: 0};
+            } else if (h1 < 3) {
+                return {r: 0, g: c * 255, b: x * 255};
+            } else if (h1 < 4) {
+                return {r: 0, g: x * 255, b: c * 255};
+            } else if (h1 < 5) {
+                return {r: x * 255, g: 0, b: c * 255};
+            } else if (h1 < 6) {
+                return {r: c * 255, g: 0, b: x * 255};
+            }
+        }
+
+        let picker = document.querySelector(".picker");
+        let startPoint = picker.getBoundingClientRect().x;
+        let size = picker.offsetWidth;
+        document.addEventListener("mousemove", e => {
+            if (e.target === picker) {
+                let val = e.clientX - startPoint;
+                let per = val * 100 / size;
+                let H = per * 360 / 100;
+                let color = hsvToRgb(H, 1, 1)
+                document.body.style.backgroundColor = `rgb(${color.r},${color.g},${color.b})`;
+            }
+        });
+    </script>
+</body>
+</html>
